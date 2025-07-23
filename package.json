@@ -19,7 +19,7 @@
     "@react-native-community/slider": "4.5.6",
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/native": "^7.0.14",
-    "expo": "53.0.20",
+    "expo": "49.0.0",
     "expo-av": "^15.1.7",
     "expo-barcode-scanner": "^13.0.1",
     "expo-blur": "~14.1.5",
@@ -50,7 +50,7 @@
     "react-native-uuid": "^2.0.3",
     "react-native-web": "^0.20.0",
     "react-native-webview": "13.13.5",
-    "metro": "^0.80.0"
+    "metro": "0.76.0"
   },
     "devDependencies": {
     "@babel/core": "^7.25.2",
