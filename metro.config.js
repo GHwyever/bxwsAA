@@ -1,13 +1,13 @@
-const { getDefaultConfig } = require('expo/metro-config');
+const { getDefaultConfig } = require('@expo/metro-config');
 
 const config = getDefaultConfig(__dirname);
 
-// Explicitly configure transformer for TypeScript files
-config.transformer = {
-  babelTransformerPath: require.resolve('metro-react-native-babel-transformer'),
-};
-
-// Ensure TypeScript files are recognized
-config.resolver.sourceExts = ['js', 'jsx', 'ts', 'tsx', 'json'];
+// 添加 TypeScript 支持
+config.resolver.sourceExts = [
+  ...config.resolver.sourceExts,
+  'ts',
+  'tsx',
+  'cjs'
+];
 
 module.exports = config;
