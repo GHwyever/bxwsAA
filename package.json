@@ -29,6 +29,7 @@
     "expo-haptics": "~12.4.0",
     "expo-linear-gradient": "~12.3.0",
     "expo-linking": "~5.0.2",
+    "expo-modules-core": "^2.5.0",
     "expo-notifications": "^0.31.4",
     "expo-router": "^5.1.4",
     "expo-speech": "~11.3.0",
