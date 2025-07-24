@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
 import { Chrome as Home, Camera, Settings } from 'lucide-react-native';
-import { useLanguage } from '@/hooks/useLanguage';
+import { useLanguage } from '@/hooks/useLanguage.ts';
 
 export default function TabLayout() {
   const { t } = useLanguage();
