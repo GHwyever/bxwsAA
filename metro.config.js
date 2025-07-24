@@ -1,20 +1,22 @@
 const { getDefaultConfig } = require('expo/metro-config');
-const path = require('path');
 
 const config = getDefaultConfig(__dirname);
 
-// Ensure TypeScript files are handled properly
+// Add TypeScript support
 config.resolver.sourceExts.push('ts', 'tsx');
 
-// Handle TypeScript files in node_modules
+// Configure transformer for TypeScript
 config.transformer.babelTransformerPath = require.resolve('metro-react-native-babel-transformer');
 
-// Explicitly configure transform options to ensure node_modules are processed
+// Add transform options
 config.transformer.getTransformOptions = async () => ({
   transform: {
     experimentalImportSupport: false,
-    inlineRequires: true,
+    inlineRequires: false,
   },
 });
+
+// Ensure node_modules are processed
+config.resolver.platforms = ['ios', 'android', 'native', 'web'];
 
 module.exports = config;
