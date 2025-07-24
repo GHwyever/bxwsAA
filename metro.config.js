@@ -1,22 +1,22 @@
-const { getDefaultConfig } = require('expo/metro-config');
+   // metro.config.js
+   const { getDefaultConfig } = require('expo/metro-config');
 
-const config = getDefaultConfig(__dirname);
+   const config = getDefaultConfig(__dirname);
 
-// Add TypeScript support
-config.resolver.sourceExts.push('ts', 'tsx');
+   // 添加 TypeScript 支持
+   config.resolver.sourceExts = [
+     'js',
+     'jsx',
+     'ts',
+     'tsx',
+     'json',
+     'cjs' // 如果需要支持 CommonJS
+   ];
 
-// Configure transformer for TypeScript
-config.transformer.babelTransformerPath = require.resolve('metro-react-native-babel-transformer');
+   // 添加 asset 支持
+   config.resolver.assetExts = [
+     ...config.resolver.assetExts.filter(ext => ext !== 'svg'),
+     'bin'
+   ];
 
-// Add transform options
-config.transformer.getTransformOptions = async () => ({
-  transform: {
-    experimentalImportSupport: false,
-    inlineRequires: false,
-  },
-});
-
-// Ensure node_modules are processed
-config.resolver.platforms = ['ios', 'android', 'native', 'web'];
-
-module.exports = config;
+   module.exports = config;
