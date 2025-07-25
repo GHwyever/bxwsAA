@@ -12,13 +12,17 @@ import {
   Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { X, Calendar, Save } from 'lucide-react-native';
+import { X, Calendar, Save, Star, MessageCircle } from 'lucide-react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { FoodItem } from '@/types/food';
+import { Rating, RatingStats } from '@/types/rating';
 import { foodStorage } from '@/utils/storage';
+import { ratingStorage } from '@/utils/ratingStorage';
 import { useLanguage } from '@/hooks/useLanguage';
 import { scheduleNotification } from '@/utils/notifications';
+import { RatingModal } from '@/components/RatingModal';
+import { RatingDisplay } from '@/components/RatingDisplay';
 
 export default function FoodDetailScreen() {
   const router = useRouter();
@@ -33,10 +37,13 @@ export default function FoodDetailScreen() {
   const [showExpiryDatePicker, setShowExpiryDatePicker] = useState(false);
   const [expiryDays, setExpiryDays] = useState('');
   const [isEditMode, setIsEditMode] = useState(!id);
+  const [showRatingModal, setShowRatingModal] = useState(false);
+  const [ratingStats, setRatingStats] = useState<RatingStats | null>(null);
 
   useEffect(() => {
     if (id) {
       loadFood();
+      loadRatingStats();
     }
   }, [id]);
 
@@ -57,6 +64,15 @@ export default function FoodDetailScreen() {
     }
   };
 
+  const loadRatingStats = async () => {
+    if (!id) return;
+    try {
+      const stats = await ratingStorage.getRatingStats(id);
+      setRatingStats(stats);
+    } catch (error) {
+      console.error('Failed to load rating stats:', error);
+    }
+  };
   const handleExpiryDaysChange = (days: string) => {
     setExpiryDays(days);
     if (days && !isNaN(Number(days))) {
@@ -101,6 +117,9 @@ export default function FoodDetailScreen() {
     router.back();
   };
 
+  const handleRatingSubmitted = () => {
+    loadRatingStats();
+  };
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
@@ -117,7 +136,12 @@ export default function FoodDetailScreen() {
               <Text style={styles.editButtonText}>{t('edit')}</Text>
             </TouchableOpacity>
           )}
-          {!id && <View style={{ width: 24 }} />}
+          {id && !isEditMode && (
+            <TouchableOpacity onPress={() => setShowRatingModal(true)} style={styles.rateButton}>
+              <Star size={16} color="#FFFFFF" />
+            </TouchableOpacity>
+          )}
+          {!id && !isEditMode && <View style={{ width: 24 }} />}
         </View>
 
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
@@ -125,6 +149,15 @@ export default function FoodDetailScreen() {
             <View style={styles.imageContainer}>
               <Image source={{ uri: food.imageUri }} style={styles.itemImage} />
             </View>
+          )}
+
+          {/* Rating Section */}
+          {id && !isEditMode && ratingStats && ratingStats.totalRatings > 0 && (
+            <RatingDisplay 
+              stats={ratingStats} 
+              onViewAllRatings={() => router.push('/ratings')}
+              compact
+            />
           )}
 
           <View style={styles.form}>
@@ -178,6 +211,13 @@ export default function FoodDetailScreen() {
           />
         )}
       </KeyboardAvoidingView>
+      
+      <RatingModal
+        visible={showRatingModal}
+        food={food as FoodItem}
+        onClose={() => setShowRatingModal(false)}
+        onRatingSubmitted={handleRatingSubmitted}
+      />
     </SafeAreaView>
   );
 }
@@ -212,6 +252,14 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     fontFamily: 'Inter-Medium',
+  },
+  rateButton: {
+    backgroundColor: '#F59E0B',
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   content: {
     flex: 1,

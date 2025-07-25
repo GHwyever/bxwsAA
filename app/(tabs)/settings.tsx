@@ -17,6 +17,7 @@ import {
   Shield, 
   CircleHelp as HelpCircle, 
   Star, 
+  MessageCircle,
   ChevronRight, 
   Trash2, 
   Volume2,
@@ -34,11 +35,14 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { useNotifications } from '@/hooks/useNotifications';
 import { voiceManager } from '@/utils/voiceNotifications';
 import { foodStorage } from '@/utils/storage';
+import { ratingStorage } from '@/utils/ratingStorage';
 import { VoiceSettingsModal } from '@/components/VoiceSettingsModal';
+import { FeedbackModal } from '@/components/FeedbackModal';
 
 export default function SettingsScreen() {
   const [showVoiceSettings, setShowVoiceSettings] = useState(false);
   const [showLanguageModal, setShowLanguageModal] = useState(false);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const router = useRouter();
   const { t, language, changeLanguage, getSupportedLanguages } = useLanguage();
   const { isSubscribed, subscriptionType } = useSubscription();
@@ -62,6 +66,7 @@ export default function SettingsScreen() {
           onPress: async () => {
             try {
               await foodStorage.clearAll();
+              await ratingStorage.clearAllRatings();
               Alert.alert(t('success'), t('dataCleared'));
             } catch (error) {
               Alert.alert(t('error'), t('clearDataError'));
@@ -108,6 +113,22 @@ export default function SettingsScreen() {
       value: notificationsEnabled,
       onPress: toggleNotifications,
       colors: ['#e8f2ff', '#d1e7ff'],
+    },
+    {
+      icon: <Star size={20} color="#f59e0b" />,
+      title: t('ratingsAndReviews'),
+      subtitle: t('viewAndManageRatings'),
+      action: 'arrow',
+      onPress: () => router.push('/ratings'),
+      colors: ['#fffbeb', '#fef3c7'],
+    },
+    {
+      icon: <MessageCircle size={20} color="#10b981" />,
+      title: t('sendFeedback'),
+      subtitle: t('helpUsImprove'),
+      action: 'arrow',
+      onPress: () => setShowFeedbackModal(true),
+      colors: ['#ecfdf5', '#d1fae5'],
     },
     {
       icon: <Volume2 size={20} color="#764ba2" />,
@@ -313,6 +334,11 @@ export default function SettingsScreen() {
         onLanguageChange={changeLanguage}
         supportedLanguages={getSupportedLanguages()}
       />
+    
+    <FeedbackModal
+      visible={showFeedbackModal}
+      onClose={() => setShowFeedbackModal(false)}
+    />
     </View>
   );
 }

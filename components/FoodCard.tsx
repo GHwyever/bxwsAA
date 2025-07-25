@@ -7,17 +7,19 @@ import {
   Image,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Calendar, Clock, TriangleAlert as AlertTriangle, CircleCheck as CheckCircle, Trash2, Sparkles } from 'lucide-react-native';
+import { Calendar, Clock, TriangleAlert as AlertTriangle, CircleCheck as CheckCircle, Trash2, Sparkles, Star } from 'lucide-react-native';
 import { FoodItem } from '@/types/food';
+import { RatingStats } from '@/types/rating';
 import { useLanguage } from '@/hooks/useLanguage';
 
 interface FoodCardProps {
   food: FoodItem;
   onPress: () => void;
   onDelete: () => void;
+  ratingStats?: RatingStats;
 }
 
-export function FoodCard({ food, onPress, onDelete }: FoodCardProps) {
+export function FoodCard({ food, onPress, onDelete, ratingStats }: FoodCardProps) {
   const { t } = useLanguage();
 
   const getDaysUntilExpiry = () => {
@@ -98,6 +100,16 @@ export function FoodCard({ food, onPress, onDelete }: FoodCardProps) {
             </Text>
             
             {/* Status badge */}
+        
+        {/* Rating display */}
+        {ratingStats && ratingStats.totalRatings > 0 && (
+          <View style={styles.ratingContainer}>
+            <Star size={12} color="#F59E0B" fill="#F59E0B" />
+            <Text style={styles.ratingText}>
+              {ratingStats.averageRating.toFixed(1)} ({ratingStats.totalRatings})
+            </Text>
+          </View>
+        )}
             <View style={styles.statusContainer}>
               <LinearGradient
                 colors={statusInfo.bgGradient}
@@ -241,6 +253,17 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 4,
+    gap: 4,
+  },
+  ratingText: {
+    fontSize: 11,
+    fontFamily: 'Inter-Medium',
+    color: '#6B7280',
   },
   cardDecorations: {
     position: 'absolute',

@@ -41,6 +41,7 @@ export default function RootLayout() {
         <Stack.Screen name="subscription" options={{ presentation: 'modal' }} />
         <Stack.Screen name="food-detail" options={{ presentation: 'modal' }} />
         <Stack.Screen name="food-list" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="ratings" options={{ presentation: 'modal' }} />
         <Stack.Screen name="onboarding" options={{ headerShown: false }} />
         <Stack.Screen name="privacy-policy" options={{ presentation: 'modal' }} />
       </Stack>
